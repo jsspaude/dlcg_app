@@ -17,3 +17,23 @@ use App\Models\Categories;
 */
 
 Route::get('/', [CategoriesController::class, 'index']);
+
+Route::post('/', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255',
+        'parent_id' => 'required',
+    ]);
+ 
+    if ($validator->fails()) {
+        return redirect('/')
+            ->withInput()
+            ->withErrors($validator);
+    }
+ 
+    $product = new Categories;
+    $product->name = $request->name;
+    $product->parent_id = $request->parent_id;
+    $product->save();
+
+    return redirect('/');
+});
